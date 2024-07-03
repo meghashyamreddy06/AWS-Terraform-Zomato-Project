@@ -15,7 +15,7 @@ pipeline{
 		}
 		stage('Code Checkout From Git'){
 			steps{
-				git branch: 'main', url: 'https://github.com/Cloud-Gen-DevOps-Projects/AWS-Terraform-Zomato-Project.git'
+				git branch: 'main', url: 'https://github.com/meghashyamreddy06/AWS-Terraform-Zomato-Project.git'
 			}
 		}
 		stage("SonarQube Code Analysis"){
@@ -30,7 +30,7 @@ pipeline{
 			steps{
 				script{
 					 timeout(time: 2, unit: 'MINUTES'){
-					waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+					waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
 				}
 			}
 		}
@@ -56,20 +56,20 @@ pipeline{
 				script{
 				withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
 					sh "docker build -t cloudzomato . "
-					sh "docker tag cloudzomato thanish/cloudzomato:latest"
-					sh "docker push thanish/cloudzomato:latest"
+					sh "docker tag cloudzomato meghshyamreddy/cloudzomato:latest"
+					sh "docker push meghshyamreddy/cloudzomato:latest"
 						}
 					}
 				}
 			}
 		stage("TRIVY is Image Scanning"){
 			steps{
-				sh "trivy image thanish/cloudzomato:latest >trivy.txt"
+				sh "trivy image meghshyamreddy/cloudzomato:latest >trivy.txt"
 			}
 		}
 		stage("Creating Docker Container "){
 			steps{
-				sh 'docker run -d --name zomato-app -h zomato -p 3000:3000 thanish/cloudzomato:latest'
+				sh 'docker run -d --name zomato-app -h zomato -p 3000:3000 meghshyamreddy/cloudzomato:latest'
 			}
 		}
 	}
